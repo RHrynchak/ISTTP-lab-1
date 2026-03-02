@@ -1,0 +1,52 @@
+﻿@model ISTTP_lab_1.Models.PcConfig
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>PcConfig</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.User.Username)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Os)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Os)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Cpu)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Cpu.ModelName)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Gpu)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Gpu.ModelName)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RamGb)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RamGb)
+        </dd>
+    </dl>
+</div>
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

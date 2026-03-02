@@ -1,0 +1,78 @@
+﻿@model ISTTP_lab_1.Models.CheckResultModel
+
+@{
+    ViewData["Title"] = "Результат перевірки";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Результат для <span class="text-warning">@Model.Game.Title</span></h2>
+    <p class="text-center mb-5 text-white">Перевіряємо збірку користувача: <strong>@Model.Pc.User.Username</strong></p>
+
+    @foreach (var res in Model.Results)
+    {
+        <div class="card mb-5 shadow-lg border-@(res.AllOk ? "success" : "danger")">
+
+            <div class="card-header bg-@(res.AllOk ? "success" : "danger") text-white text-center">
+                <h3 class="mb-0">@res.Requirement.Type вимоги: @(res.AllOk ? "✅ НАПОТУЖНІЧАВ" : "❌ КРИТИЧНА НЕСТАЧА ПОТУЖНОСТІ")</h3>
+            </div>
+
+            <div class="card-body bg-dark text-white">
+                <div class="row mt-3">
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-@(res.CpuOk ? "success" : "danger") h-100 bg-transparent">
+                            <div class="card-header bg-@(res.CpuOk ? "success" : "danger") text-white fw-bold">
+                                ⚙️ Процесор @(res.CpuOk ? "✅" : "❌")
+                            </div>
+                            <div class="card-body text-white">
+                                <p><strong>Ваш:</strong> @Model.Pc.Cpu.ModelName (Score: @Model.Pc.Cpu.BenchmarkScore)</p>
+                                <p><strong>Треба:</strong> @res.Requirement.Cpu.ModelName (Score: @res.Requirement.Cpu.BenchmarkScore)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-@(res.GpuOk ? "success" : "danger") h-100 bg-transparent">
+                            <div class="card-header bg-@(res.GpuOk ? "success" : "danger") text-white fw-bold">
+                                🎮 Відеокарта @(res.GpuOk ? "✅" : "❌")
+                            </div>
+                            <div class="card-body text-white">
+                                <p><strong>Ваша:</strong> @Model.Pc.Gpu.ModelName (Score: @Model.Pc.Gpu.BenchmarkScore, VRAM: @Model.Pc.Gpu.VramGb ГБ)</p>
+                                <p><strong>Треба:</strong> @res.Requirement.Gpu.ModelName (Score: @res.Requirement.Gpu.BenchmarkScore, VRAM: @(res.Requirement.VramGb ?? 0) ГБ)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-@(res.RamOk ? "success" : "danger") h-100 bg-transparent">
+                            <div class="card-header bg-@(res.RamOk ? "success" : "danger") text-white fw-bold">
+                                🧠 Оперативна пам'ять @(res.RamOk ? "✅" : "❌")
+                            </div>
+                            <div class="card-body text-white">
+                                <p><strong>Ваша:</strong> @Model.Pc.RamGb ГБ</p>
+                                <p><strong>Треба:</strong> @res.Requirement.RamGb ГБ</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-@(res.OsOk ? "success" : "danger") h-100 bg-transparent">
+                            <div class="card-header bg-@(res.OsOk ? "success" : "danger") text-white fw-bold">
+                                🖥️ Операційна система @(res.OsOk ? "✅" : "❌")
+                            </div>
+                            <div class="card-body text-white">
+                                <p><strong>Ваша:</strong> @Model.Pc.Os</p>
+                                <p><strong>Підтримуються:</strong> @string.Join(", ", res.Requirement.OSes ?? new List<ISTTP_lab_1.Models.OsEnum>())</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="text-center mt-4 mb-5">
+        <a asp-action="Index" class="btn btn-info btn-lg">🔄 Перевірити іншу гру / ПК</a>
+    </div>
+</div>

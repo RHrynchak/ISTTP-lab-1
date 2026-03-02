@@ -1,0 +1,73 @@
+﻿@model ISTTP_lab_1.Models.Requirement
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Requirement</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Game)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Game.Title)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.OSes)
+        </dt>
+        <dd class="col-sm-9">
+            @(Model.OSes != null ? string.Join(", ", Model.OSes) : "Не вказано")
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Cpu)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Cpu.ModelName)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.CpuCores)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.CpuCores)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Gpu)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Gpu.ModelName)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.VramGb)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.VramGb)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.RamGb)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.RamGb)
+        </dd>
+    </dl>
+</div>
+<div class="d-flex gap-2 mt-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

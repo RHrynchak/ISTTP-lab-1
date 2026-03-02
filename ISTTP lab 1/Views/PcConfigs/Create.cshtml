@@ -1,0 +1,58 @@
+﻿@model ISTTP_lab_1.Models.PcConfig
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>PcConfig</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Os" class="control-label"></label>
+                <select asp-for="Os" class="form-control" asp-items="Html.GetEnumSelectList<ISTTP_lab_1.Models.OsEnum>()"></select>
+                <span asp-validation-for="Os" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CpuId" class="control-label"></label>
+                <select asp-for="CpuId" class="form-control" asp-items="ViewBag.CpuId"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="GpuId" class="control-label"></label>
+                <select asp-for="GpuId" class="form-control" asp-items="ViewBag.GpuId"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RamGb" class="control-label"></label>
+                <input asp-for="RamGb" class="form-control" />
+                <span asp-validation-for="RamGb" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

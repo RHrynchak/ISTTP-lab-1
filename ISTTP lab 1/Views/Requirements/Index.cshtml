@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ISTTP_lab_1.Models.Requirement>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-success">
+        Create new
+    </a>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Game)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OSes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cpu)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CpuCores)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gpu)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VramGb)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RamGb)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Game.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @(item.OSes != null ? string.Join(", ", item.OSes) : "Не вказано")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cpu.ModelName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CpuCores)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gpu.ModelName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VramGb)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RamGb)
+            </td>
+            <td>
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

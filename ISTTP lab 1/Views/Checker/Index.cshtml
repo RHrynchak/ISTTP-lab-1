@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "PC Checker";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Перевірка характеристик</h3>
+                </div>
+                <div class="card-body bg-dark text-light">
+                    <p class="text-center mb-4">Оберіть ваш ПК та бажану гру, щоб дізнатися, чи вистачить вам ПОТУЖНОСТІ!</p>
+
+                    <form asp-action="Result" method="post">
+                        <div class="form-group mb-3">
+                            <label class="form-label fw-bold text-info">Оберіть ваш ПК:</label>
+                            <select name="pcConfigId" class="form-select" asp-items="ViewBag.PcConfigId" required>
+                                <option value="">-- Оберіть ПК --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="form-label fw-bold text-warning">Оберіть бажану гру:</label>
+                            <select name="gameId" class="form-select" asp-items="ViewBag.GameId" required>
+                                <option value="">-- Оберіть гру --</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold">ПЕРЕВІРИТИ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

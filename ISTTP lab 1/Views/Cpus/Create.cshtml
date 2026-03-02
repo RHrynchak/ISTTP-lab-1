@@ -1,0 +1,43 @@
+﻿@model ISTTP_lab_1.Models.Cpu
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Cpu</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ModelName" class="control-label"></label>
+                <input asp-for="ModelName" class="form-control" />
+                <span asp-validation-for="ModelName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BenchmarkScore" class="control-label"></label>
+                <input asp-for="BenchmarkScore" class="form-control" />
+                <span asp-validation-for="BenchmarkScore" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CoresNumber" class="control-label"></label>
+                <input asp-for="CoresNumber" class="form-control" />
+                <span asp-validation-for="CoresNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
