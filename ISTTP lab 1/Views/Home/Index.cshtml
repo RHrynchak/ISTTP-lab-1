@@ -1,8 +1,169 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model ISTTP_lab_1.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Головна";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4 text-info fw-bold">PC Check System</h1>
+        <p class="lead text-white">Перевір, чи потягне твій комп'ютер ігри!</p>
+    </div>
+
+    <div class="row text-center mb-5">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <h3>Ігор у базі</h3>
+                    <h2 class="fw-bold">@Model.TotalGames</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <h3>Збірок ПК</h3>
+                    <h2 class="fw-bold">@Model.TotalPcConfigs</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <h3>Користувачів</h3>
+                    <h2 class="fw-bold">@Model.TotalUsers</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-info shadow h-100">
+                <div class="card-header border-info text-info text-center fw-bold">
+                    Операційні Системи
+                </div>
+                <div class="card-body d-flex justify-content-center">
+                    <div id="os_chart_div" style="width: 100%; height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 mb-4">
+            <div class="card bg-dark border-info shadow h-100">
+                <div class="card-header border-info text-info text-center fw-bold">
+                    Топ-5 Процесорів у Збірках
+                </div>
+                <div class="card-body">
+                    <div id="cpu_chart_div" style="width: 100%; height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card bg-dark border-info shadow h-100">
+                <div class="card-header border-info text-info text-center fw-bold">
+                    Топ-5 Відеокарт у Збірках
+                </div>
+                <div class="card-body">
+                    <div id="gpu_chart_div" style="width: 100%; height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function drawCharts() {
+
+        var osLabels = @Html.Raw(Json.Serialize(Model.OsLabels));
+        var osCounts = @Html.Raw(Json.Serialize(Model.OsCounts));
+
+        var osDataArray = [['ОС', 'Кількість']];
+        for(var i = 0; i < osLabels.length; i++) {
+            osDataArray.push([osLabels[i], osCounts[i]]);
+        }
+        var osData = google.visualization.arrayToDataTable(osDataArray);
+
+        var osOptions = {
+            backgroundColor: 'transparent',
+            pieHole: 0.4,
+            legend: { textStyle: { color: 'white', fontSize: 14 } },
+            pieSliceBorderColor: '#2b2b2b'
+        };
+
+        var osChart = new google.visualization.PieChart(document.getElementById('os_chart_div'));
+        osChart.draw(osData, osOptions);
+
+        var cpuLabels = @Html.Raw(Json.Serialize(Model.TopCpuLabels));
+        var cpuCounts = @Html.Raw(Json.Serialize(Model.TopCpuCounts));
+
+        var cpuDataArray = [['Процесор', 'Кількість збірок', { role: 'style' }]];
+        var cpuColors = ['#198754', '#0dcaf0', '#ffc107', '#d63384', '#6f42c1'];
+
+        for(var i = 0; i < cpuLabels.length; i++) {
+            cpuDataArray.push([cpuLabels[i], cpuCounts[i], cpuColors[i % cpuColors.length]]);
+        }
+        var cpuData = google.visualization.arrayToDataTable(cpuDataArray);
+
+        var cpuOptions = {
+            backgroundColor: 'transparent',
+            legend: { position: 'none' },
+            hAxis: {
+                textStyle: { color: 'white' },
+                gridlines: { color: '#444' },
+                minValue: 0
+            },
+            vAxis: {
+                textStyle: { color: 'white' }
+            },
+            animation: {
+                startup: true,
+                duration: 1000,
+                easing: 'out'
+            }
+        };
+
+        var cpuChart = new google.visualization.BarChart(document.getElementById('cpu_chart_div'));
+        cpuChart.draw(cpuData, cpuOptions);
+
+        var gpuLabels = @Html.Raw(Json.Serialize(Model.TopGpuLabels));
+        var gpuCounts = @Html.Raw(Json.Serialize(Model.TopGpuCounts));
+
+        var gpuDataArray = [['Відеокарта', 'Кількість збірок', { role: 'style' }]];
+        var colors = ['#0dcaf0', '#198754', '#ffc107', '#d63384', '#6f42c1'];
+
+        for(var i = 0; i < gpuLabels.length; i++) {
+            gpuDataArray.push([gpuLabels[i], gpuCounts[i], colors[i % colors.length]]);
+        }
+        var gpuData = google.visualization.arrayToDataTable(gpuDataArray);
+
+        var gpuOptions = {
+            backgroundColor: 'transparent',
+            legend: { position: 'none' },
+            hAxis: {
+                textStyle: { color: 'white' }
+            },
+            vAxis: {
+                textStyle: { color: 'white' },
+                gridlines: { color: '#444' },
+                minValue: 0
+            },
+            animation: {
+                startup: true,
+                duration: 1000,
+                easing: 'out'
+            }
+        };
+
+        var gpuChart = new google.visualization.ColumnChart(document.getElementById('gpu_chart_div'));
+        gpuChart.draw(gpuData, gpuOptions);
+    }
+</script>
