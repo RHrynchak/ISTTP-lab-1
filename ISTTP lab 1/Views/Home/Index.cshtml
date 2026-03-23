@@ -5,165 +5,406 @@
 }
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --chart-bg: #111318;
+        --grid-color: #1e2228;
+        --base-color: #2a9fd6;
+        --text-muted: #7a8090;
+        --text-light: #e8eaf0;
+    }
+
+    body {
+        background-color: #0d0d0f;
+    }
+
+    .site-title {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        background: linear-gradient(135deg, #00e5ff 0%, #2a9fd6 60%, #1a6fa0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .site-subtitle {
+        font-family: 'Share Tech Mono', monospace;
+        color: var(--text-muted);
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+    }
+
+    .stat-card {
+        background: var(--chart-bg);
+        border: 1px solid rgba(42, 159, 214, 0.3);
+        border-radius: 8px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(42, 159, 214, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .stat-card.c-blue::before {
+            background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+        }
+
+        .stat-card.c-green::before {
+            background: linear-gradient(90deg, transparent, #39d353, transparent);
+        }
+
+        .stat-card.c-gold::before {
+            background: linear-gradient(90deg, transparent, #f0c040, transparent);
+        }
+
+    .stat-label {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .stat-card.c-blue .stat-value {
+        color: #00e5ff;
+    }
+
+    .stat-card.c-green .stat-value {
+        color: #39d353;
+    }
+
+    .stat-card.c-gold .stat-value {
+        color: #f0c040;
+    }
+
+    .chart-card {
+        background: var(--chart-bg);
+        border: 1px solid rgba(42, 159, 214, 0.3);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .chart-card-header {
+        padding: 12px 20px;
+        border-bottom: 1px solid rgba(42, 159, 214, 0.25);
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #2a9fd6;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .chart-card-header::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #2a9fd6;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #2a9fd6;
+            flex-shrink: 0;
+        }
+
+    .google-visualization-tooltip {
+        background: #1a1d24 !important;
+        border: 1px solid rgba(42, 159, 214, 0.4) !important;
+        border-radius: 6px !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.6) !important;
+        padding: 2px !important;
+    }
+
+    .google-visualization-tooltip-item-list,
+    .google-visualization-tooltip-item {
+        background: transparent !important;
+    }
+
+        .google-visualization-tooltip-item span {
+            color: #e8eaf0 !important;
+            font-family: 'Share Tech Mono', monospace !important;
+            font-size: 12px !important;
+        }
+
+    .btn-neon-blue {
+        background-color: transparent;
+        border: 1px solid #00e5ff;
+        color: #00e5ff;
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-neon-blue:hover {
+            background-color: rgba(0, 229, 255, 0.1);
+            color: #00e5ff;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+        }
+
+    .btn-neon-green {
+        background-color: transparent;
+        border: 1px solid #39d353;
+        color: #39d353;
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-neon-green:hover {
+            background-color: rgba(57, 211, 83, 0.1);
+            color: #39d353;
+            box-shadow: 0 0 15px rgba(57, 211, 83, 0.3);
+        }
+
+    .custom-file-input {
+        background: var(--chart-bg);
+        color: var(--text-light);
+        border: 1px solid rgba(57, 211, 83, 0.4);
+        border-radius: 4px;
+        font-family: 'Share Tech Mono', monospace;
+    }
+
+        .custom-file-input:focus {
+            background: var(--chart-bg);
+            color: var(--text-light);
+            border-color: #39d353;
+            box-shadow: 0 0 8px rgba(57, 211, 83, 0.3);
+        }
+</style>
 
 <div class="container mt-4">
+
     <div class="text-center mb-5">
-        <h1 class="display-4 text-info fw-bold">PC Check System</h1>
-        <p class="lead text-white">Перевір, чи потягне твій комп'ютер ігри!</p>
+        <h1 class="site-title">⚙ PC Check System</h1>
+        <p class="site-subtitle mt-2">Перевір, чи потягне твій комп'ютер ігри</p>
     </div>
 
-    <div class="row text-center mb-5">
+    <div class="row text-center mb-4 g-3">
         <div class="col-md-4">
-            <div class="card bg-primary text-white shadow">
-                <div class="card-body">
-                    <h3>Ігор у базі</h3>
-                    <h2 class="fw-bold">@Model.TotalGames</h2>
-                </div>
+            <div class="stat-card c-blue">
+                <div class="stat-label">Ігор у базі</div>
+                <div class="stat-value">@Model.TotalGames</div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card bg-success text-white shadow">
-                <div class="card-body">
-                    <h3>Збірок ПК</h3>
-                    <h2 class="fw-bold">@Model.TotalPcConfigs</h2>
-                </div>
+            <div class="stat-card c-green">
+                <div class="stat-label">Збірок ПК</div>
+                <div class="stat-value">@Model.TotalPcConfigs</div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card bg-warning text-dark shadow">
-                <div class="card-body">
-                    <h3>Користувачів</h3>
-                    <h2 class="fw-bold">@Model.TotalUsers</h2>
-                </div>
+            <div class="stat-card c-gold">
+                <div class="stat-label">Користувачів</div>
+                <div class="stat-value">@Model.TotalUsers</div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card bg-dark border-info shadow h-100">
-                <div class="card-header border-info text-info text-center fw-bold">
-                    Операційні Системи
+    <div class="row mb-4 g-3">
+        <div class="col-md-12">
+            <div class="chart-card">
+                <div class="chart-card-header" style="color: #e8eaf0;">
+                    БАЗА ДАНИХ EXCEL
                 </div>
-                <div class="card-body d-flex justify-content-center">
+                <div class="p-4">
+                    <div class="row align-items-center text-center">
+
+                        <div class="col-md-6 border-end" style="border-color: rgba(42, 159, 214, 0.25) !important;">
+                            <div class="stat-label mb-3">Завантажити бекап</div>
+                            <a asp-action="ExportData" class="btn btn-neon-blue px-4 py-2">
+                                ДАМП БАЗИ (.XLSX)
+                            </a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="stat-label mb-3">Відновити / Оновити</div>
+                            <form asp-action="ImportData" method="post" enctype="multipart/form-data" class="d-flex flex-column align-items-center">
+                                <input type="file" name="fileExcel" class="form-control custom-file-input mb-3 w-75" accept=".xlsx" required />
+                                <button type="submit" class="btn btn-neon-green px-4 py-2">
+                                    Завантажити дані (.XLSX)
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="chart-card h-100">
+                <div class="chart-card-header">Операційні Системи</div>
+                <div class="p-3 d-flex justify-content-center">
                     <div id="os_chart_div" style="width: 100%; height: 300px;"></div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-8 mb-4">
-            <div class="card bg-dark border-info shadow h-100">
-                <div class="card-header border-info text-info text-center fw-bold">
-                    Топ-5 Процесорів у Збірках
-                </div>
-                <div class="card-body">
+        <div class="col-md-8">
+            <div class="chart-card h-100">
+                <div class="chart-card-header">Топ-5 Процесорів у Збірках</div>
+                <div class="p-3">
                     <div id="cpu_chart_div" style="width: 100%; height: 300px;"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12 mb-4">
-            <div class="card bg-dark border-info shadow h-100">
-                <div class="card-header border-info text-info text-center fw-bold">
-                    Топ-5 Відеокарт у Збірках
-                </div>
-                <div class="card-body">
+    <div class="row g-3 mb-4">
+        <div class="col-md-12">
+            <div class="chart-card">
+                <div class="chart-card-header">Топ-5 Відеокарт у Збірках</div>
+                <div class="p-3">
                     <div id="gpu_chart_div" style="width: 100%; height: 300px;"></div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <script type="text/javascript">
-    google.charts.load('current', {'packages':['corechart']});
+    google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawCharts);
+
+    var COLORS     = ['#00e5ff', '#39d353', '#f0c040', '#ff4d6d', '#a855f7'];
+    var AXIS_STYLE = { color: '#7a8090', fontSize: 12 };
+    var GRID_COLOR = { color: '#1e2228', count: 5 };
+    var BASE_COLOR = '#2a9fd6';
+    var CHART_BG   = '#111318';
+    var TOOLTIP    = { trigger: 'focus', isHtml: true, textStyle: { color: '#e8eaf0', fontSize: 13 } };
 
     function drawCharts() {
 
+        // ── ОС — Donut ──────────────────────────────────────────────────
         var osLabels = @Html.Raw(Json.Serialize(Model.OsLabels));
         var osCounts = @Html.Raw(Json.Serialize(Model.OsCounts));
 
         var osDataArray = [['ОС', 'Кількість']];
-        for(var i = 0; i < osLabels.length; i++) {
+        for (var i = 0; i < osLabels.length; i++) {
             osDataArray.push([osLabels[i], osCounts[i]]);
         }
         var osData = google.visualization.arrayToDataTable(osDataArray);
-
         var osOptions = {
-            backgroundColor: 'transparent',
-            pieHole: 0.4,
-            legend: { textStyle: { color: 'white', fontSize: 14 } },
-            pieSliceBorderColor: '#2b2b2b'
+            backgroundColor:     { fill: CHART_BG },
+            pieHole:             0.42,
+            pieSliceBorderColor: CHART_BG,
+            colors:              COLORS,
+            legend: {
+                textStyle: { color: '#7a8090', fontSize: 12 },
+                position:  'bottom',
+                alignment: 'center'
+            },
+            chartArea: { width: '90%', height: '75%', backgroundColor: CHART_BG },
+            tooltip:   Object.assign({}, TOOLTIP, { showColorCode: true })
         };
-
         var osChart = new google.visualization.PieChart(document.getElementById('os_chart_div'));
         osChart.draw(osData, osOptions);
 
+        // ── CPU — Bar (горизонтальний) ───────────────────────────────────
         var cpuLabels = @Html.Raw(Json.Serialize(Model.TopCpuLabels));
         var cpuCounts = @Html.Raw(Json.Serialize(Model.TopCpuCounts));
 
         var cpuDataArray = [['Процесор', 'Кількість збірок', { role: 'style' }]];
-        var cpuColors = ['#198754', '#0dcaf0', '#ffc107', '#d63384', '#6f42c1'];
-
-        for(var i = 0; i < cpuLabels.length; i++) {
-            cpuDataArray.push([cpuLabels[i], cpuCounts[i], cpuColors[i % cpuColors.length]]);
+        for (var i = 0; i < cpuLabels.length; i++) {
+            cpuDataArray.push([cpuLabels[i], cpuCounts[i], COLORS[i % COLORS.length]]);
         }
         var cpuData = google.visualization.arrayToDataTable(cpuDataArray);
 
+        var cpuMax   = Math.max.apply(null, cpuCounts);
+        var cpuTicks = [];
+        for (var t = 0; t <= cpuMax; t++) { cpuTicks.push(t); }
+
         var cpuOptions = {
-            backgroundColor: 'transparent',
-            legend: { position: 'none' },
+            backgroundColor: { fill: CHART_BG },
+            legend:          { position: 'none' },
+            bar:             { groupWidth: '65%' },
             hAxis: {
-                textStyle: { color: 'white' },
-                gridlines: { color: '#444' },
-                minValue: 0
+                textStyle:     AXIS_STYLE,
+                gridlines:     GRID_COLOR,
+                minorGridlines:{ color: CHART_BG },
+                baselineColor: BASE_COLOR,
+                minValue:      0,
+                format:        '#',
+                ticks:         cpuTicks
             },
             vAxis: {
-                textStyle: { color: 'white' }
+                textStyle: AXIS_STYLE,
+                gridlines: { color: CHART_BG }
             },
-            animation: {
-                startup: true,
-                duration: 1000,
-                easing: 'out'
-            }
+            chartArea: { width: '65%', height: '80%', backgroundColor: CHART_BG },
+            tooltip:   TOOLTIP,
+            animation: { startup: true, duration: 900, easing: 'out' }
         };
-
         var cpuChart = new google.visualization.BarChart(document.getElementById('cpu_chart_div'));
         cpuChart.draw(cpuData, cpuOptions);
 
+        // ── GPU — Bar (горизонтальний) ───────────────────────────────────
         var gpuLabels = @Html.Raw(Json.Serialize(Model.TopGpuLabels));
         var gpuCounts = @Html.Raw(Json.Serialize(Model.TopGpuCounts));
 
         var gpuDataArray = [['Відеокарта', 'Кількість збірок', { role: 'style' }]];
-        var colors = ['#0dcaf0', '#198754', '#ffc107', '#d63384', '#6f42c1'];
-
-        for(var i = 0; i < gpuLabels.length; i++) {
-            gpuDataArray.push([gpuLabels[i], gpuCounts[i], colors[i % colors.length]]);
+        for (var i = 0; i < gpuLabels.length; i++) {
+            gpuDataArray.push([gpuLabels[i], gpuCounts[i], COLORS[i % COLORS.length]]);
         }
         var gpuData = google.visualization.arrayToDataTable(gpuDataArray);
 
+        var gpuMax   = Math.max.apply(null, gpuCounts);
+        var gpuTicks = [];
+        for (var t = 0; t <= gpuMax; t++) { gpuTicks.push(t); }
+
         var gpuOptions = {
-            backgroundColor: 'transparent',
-            legend: { position: 'none' },
+            backgroundColor: { fill: CHART_BG },
+            legend:          { position: 'none' },
+            bar:             { groupWidth: '65%' },
             hAxis: {
-                textStyle: { color: 'white' }
+                textStyle:     AXIS_STYLE,
+                gridlines:     GRID_COLOR,
+                minorGridlines:{ color: CHART_BG },
+                baselineColor: BASE_COLOR,
+                minValue:      0,
+                format:        '#',
+                ticks:         gpuTicks
             },
             vAxis: {
-                textStyle: { color: 'white' },
-                gridlines: { color: '#444' },
-                minValue: 0
+                textStyle: AXIS_STYLE,
+                gridlines: { color: CHART_BG }
             },
-            animation: {
-                startup: true,
-                duration: 1000,
-                easing: 'out'
-            }
+            chartArea: { width: '70%', height: '85%', backgroundColor: CHART_BG },
+            tooltip:   TOOLTIP,
+            animation: { startup: true, duration: 900, easing: 'out' }
         };
-
-        var gpuChart = new google.visualization.ColumnChart(document.getElementById('gpu_chart_div'));
+        var gpuChart = new google.visualization.BarChart(document.getElementById('gpu_chart_div'));
         gpuChart.draw(gpuData, gpuOptions);
     }
 </script>
