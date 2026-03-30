@@ -143,9 +143,9 @@ namespace ISTTP_lab_1.Controllers
                 }
             }
 
-            ViewData["CpuId"] = new SelectList(_context.Cpus, "Id", "ModelName");
-            ViewData["GameId"] = new SelectList(_context.Games, "Id", "Title");
-            ViewData["GpuId"] = new SelectList(_context.Gpus, "Id", "ModelName");
+            ViewData["CpuId"] = new SelectList(_context.Cpus, "Id", "ModelName", requirement.CpuId);
+            ViewData["GameId"] = new SelectList(_context.Games, "Id", "Title", requirement.GameId);
+            ViewData["GpuId"] = new SelectList(_context.Gpus, "Id", "ModelName", requirement.GpuId);
             return View(requirement);
         }
 

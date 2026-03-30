@@ -16,7 +16,7 @@ public partial class Game
     public DateOnly ReleaseDate { get; set; }
 
     [Required(ErrorMessage = "Вага гри є обов'язковою.")]
-    [Range(0.1, 2000.0, ErrorMessage = "Вага гри має бути від 0.1 до 500 ГБ.")]
+    [Range(0.1, 2000.0, ErrorMessage = "Вага гри має бути від 0.1 до 2000 ГБ.")]
     public decimal SizeGb { get; set; }
 
     public virtual ICollection<Requirement> Requirements { get; set; } = new List<Requirement>();

@@ -63,15 +63,32 @@ namespace ISTTP_lab_1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,UserId,CpuId,GpuId,RamGb,Os")] PcConfig pcConfig)
         {
+            if (_context.PcConfigs.Any(p =>
+                p.UserId == pcConfig.UserId &&
+                p.CpuId == pcConfig.CpuId &&
+                p.GpuId == pcConfig.GpuId &&
+                p.RamGb == pcConfig.RamGb &&
+                p.Os == pcConfig.Os))
+            {
+                ModelState.AddModelError("", "У цього користувача вже є точно така сама збірка ПК!");
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(pcConfig);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(pcConfig);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError("", "Сталася помилка збереження в базу даних.");
+                }
             }
-            ViewData["CpuId"] = new SelectList(_context.Cpus, "Id", "ModelName");
-            ViewData["GpuId"] = new SelectList(_context.Gpus, "Id", "ModelName");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Username");
+            ViewData["CpuId"] = new SelectList(_context.Cpus, "Id", "ModelName", pcConfig.CpuId);
+            ViewData["GpuId"] = new SelectList(_context.Gpus, "Id", "ModelName", pcConfig.GpuId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Username", pcConfig.UserId);
             return View(pcConfig);
         }
 
@@ -106,12 +123,24 @@ namespace ISTTP_lab_1.Controllers
                 return NotFound();
             }
 
+            if (_context.PcConfigs.Any(p =>
+                p.Id != pcConfig.Id &&
+                p.UserId == pcConfig.UserId &&
+                p.CpuId == pcConfig.CpuId &&
+                p.GpuId == pcConfig.GpuId &&
+                p.RamGb == pcConfig.RamGb &&
+                p.Os == pcConfig.Os))
+            {
+                ModelState.AddModelError("", "У цього користувача вже є точно така сама збірка ПК!");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(pcConfig);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,11 +153,15 @@ namespace ISTTP_lab_1.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError("", "Сталася помилка при оновленні бази даних.");
+                }
             }
-            ViewData["CpuId"] = new SelectList(_context.Cpus, "Id", "ModelName");
-            ViewData["GpuId"] = new SelectList(_context.Gpus, "Id", "ModelName");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Username");
+
+            ViewData["CpuId"] = new SelectList(_context.Cpus, "Id", "ModelName", pcConfig.CpuId);
+            ViewData["GpuId"] = new SelectList(_context.Gpus, "Id", "ModelName", pcConfig.GpuId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Username", pcConfig.UserId);
             return View(pcConfig);
         }
 

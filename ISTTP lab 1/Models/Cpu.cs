@@ -13,7 +13,7 @@ public partial class Cpu
     public string ModelName { get; set; } = null!;
 
     [Required(ErrorMessage = "Оцінка моделі є обов'язковою.")]
-    [Range(1, 150000, ErrorMessage = "Оцінка має бути від 1 до 200000.")]
+    [Range(1, 150000, ErrorMessage = "Оцінка має бути від 1 до 150000.")]
     public int BenchmarkScore { get; set; }
 
     [Required(ErrorMessage = "Кількість ядер є обов'язковою.")]

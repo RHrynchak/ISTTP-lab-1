@@ -208,6 +208,23 @@
         <p class="site-subtitle mt-2">Перевір, чи потягне твій комп'ютер ігри</p>
     </div>
 
+    @if (TempData["ImportSuccess"] != null)
+    {
+        <div class="alert alert-success mb-4" style="background: rgba(57, 211, 83, 0.1); border: 1px solid #39d353; color: #39d353; font-family: 'Share Tech Mono', monospace;">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["ImportSuccess"]
+        </div>
+    }
+
+    @if (TempData["ImportWarnings"] != null)
+    {
+        <div class="alert alert-warning mb-4" style="background: rgba(240, 192, 64, 0.1); border: 1px solid #f0c040; color: #f0c040; font-family: 'Share Tech Mono', monospace; max-height: 200px; overflow-y: auto;">
+            <strong style="font-family: 'Rajdhani', sans-serif; letter-spacing: 1px;">⚠️ УВАГА: ДЕЯКІ РЯДКИ БУЛО ПРОПУЩЕНО:</strong><br />
+            <div class="mt-2" style="font-size: 0.85rem; line-height: 1.6;">
+                @Html.Raw(TempData["ImportWarnings"])
+            </div>
+        </div>
+    }
+
     <div class="row text-center mb-4 g-3">
         <div class="col-md-4">
             <div class="stat-card c-blue">
