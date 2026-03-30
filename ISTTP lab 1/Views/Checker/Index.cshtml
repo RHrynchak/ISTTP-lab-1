@@ -10,6 +10,14 @@
                     <h3 class="mb-0">Перевірка характеристик</h3>
                 </div>
                 <div class="card-body bg-black text-white">
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger text-center fw-bold shadow-sm">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+
                     <p class="text-center mb-4">Оберіть ваш ПК та бажану гру, щоб дізнатися, чи вистачить вам ПОТУЖНОСТІ!</p>
 
                     <form asp-action="Result" method="post">

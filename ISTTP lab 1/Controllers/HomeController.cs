@@ -296,25 +296,28 @@ namespace ISTTP_lab_1.Controllers
                 if (row.Cell(1).TryGetValue<int>(out int id) && id > 0)
                     existing = await _context.Cpus.FindAsync(id);
 
+                bool isDuplicateInDb = existing != null
+                    ? await _context.Cpus.AnyAsync(c => c.Id != existing.Id && c.ModelName == name)
+                    : await _context.Cpus.AnyAsync(c => c.ModelName == name);
+                bool isDuplicateInLocal = existing != null
+                    ? _context.Cpus.Local.Any(c => c.Id != existing.Id && c.ModelName == name)
+                    : _context.Cpus.Local.Any(c => c.ModelName == name);
+
+                if (isDuplicateInDb || isDuplicateInLocal)
+                {
+                    errors.Add($"[Процесори] Рядок {rowNum}: пропущено (модель '{name}' вже існує або дублюється у файлі).");
+                    continue;
+                }
+
                 if (existing != null)
                 {
-                    bool isDuplicate = await _context.Cpus.AnyAsync(c => c.Id != existing.Id && c.ModelName == name);
-                    if (isDuplicate)
-                    {
-                        errors.Add($"[Процесори] Рядок {rowNum}: пропущено (модель '{name}' вже існує).");
-                        continue;
-                    }
-
                     existing.ModelName = name;
                     existing.BenchmarkScore = score;
                     existing.CoresNumber = cores;
                 }
                 else
                 {
-                    if (!await _context.Cpus.AnyAsync(c => c.ModelName == name))
-                        _context.Cpus.Add(new Cpu { ModelName = name, BenchmarkScore = score, CoresNumber = cores });
-                    else
-                        errors.Add($"[Процесори] Рядок {rowNum}: пропущено (модель '{name}' вже існує).");
+                    _context.Cpus.Add(new Cpu { ModelName = name, BenchmarkScore = score, CoresNumber = cores });
                 }
             }
         }
@@ -350,25 +353,28 @@ namespace ISTTP_lab_1.Controllers
                 if (row.Cell(1).TryGetValue<int>(out int id) && id > 0)
                     existing = await _context.Gpus.FindAsync(id);
 
+                bool isDuplicateInDb = existing != null
+                    ? await _context.Gpus.AnyAsync(g => g.Id != existing.Id && g.ModelName == name)
+                    : await _context.Gpus.AnyAsync(g => g.ModelName == name);
+                bool isDuplicateInLocal = existing != null
+                    ? _context.Gpus.Local.Any(g => g.Id != existing.Id && g.ModelName == name)
+                    : _context.Gpus.Local.Any(g => g.ModelName == name);
+
+                if (isDuplicateInDb || isDuplicateInLocal)
+                {
+                    errors.Add($"[Відеокарти] Рядок {rowNum}: пропущено (модель '{name}' вже існує або дублюється у файлі).");
+                    continue;
+                }
+
                 if (existing != null)
                 {
-                    bool isDuplicate = await _context.Gpus.AnyAsync(g => g.Id != existing.Id && g.ModelName == name);
-                    if (isDuplicate)
-                    {
-                        errors.Add($"[Відеокарти] Рядок {rowNum}: пропущено (модель '{name}' вже існує).");
-                        continue;
-                    }
-
                     existing.ModelName = name;
                     existing.BenchmarkScore = score;
                     existing.VramGb = vram;
                 }
                 else
                 {
-                    if (!await _context.Gpus.AnyAsync(g => g.ModelName == name))
-                        _context.Gpus.Add(new Gpu { ModelName = name, BenchmarkScore = score, VramGb = vram });
-                    else
-                        errors.Add($"[Відеокарти] Рядок {rowNum}: пропущено (модель '{name}' вже існує).");
+                    _context.Gpus.Add(new Gpu { ModelName = name, BenchmarkScore = score, VramGb = vram });
                 }
             }
         }
@@ -404,25 +410,28 @@ namespace ISTTP_lab_1.Controllers
                 if (row.Cell(1).TryGetValue<int>(out int id) && id > 0)
                     existing = await _context.Games.FindAsync(id);
 
+                bool isDuplicateInDb = existing != null
+                    ? await _context.Games.AnyAsync(g => g.Id != existing.Id && g.Title == title)
+                    : await _context.Games.AnyAsync(g => g.Title == title);
+                bool isDuplicateInLocal = existing != null
+                    ? _context.Games.Local.Any(g => g.Id != existing.Id && g.Title == title)
+                    : _context.Games.Local.Any(g => g.Title == title);
+
+                if (isDuplicateInDb || isDuplicateInLocal)
+                {
+                    errors.Add($"[Ігри] Рядок {rowNum}: пропущено (гра з назвою '{title}' вже існує або дублюється у файлі).");
+                    continue;
+                }
+
                 if (existing != null)
                 {
-                    bool isDuplicate = await _context.Games.AnyAsync(g => g.Id != existing.Id && g.Title == title);
-                    if (isDuplicate)
-                    {
-                        errors.Add($"[Ігри] Рядок {rowNum}: пропущено (гра з назвою '{title}' вже існує).");
-                        continue;
-                    }
-
                     existing.Title = title;
                     existing.ReleaseDate = DateOnly.FromDateTime(releaseDate);
                     existing.SizeGb = size;
                 }
                 else
                 {
-                    if (!await _context.Games.AnyAsync(g => g.Title == title))
-                        _context.Games.Add(new Game { Title = title, ReleaseDate = DateOnly.FromDateTime(releaseDate), SizeGb = size });
-                    else
-                        errors.Add($"[Ігри] Рядок {rowNum}: пропущено (гра з назвою '{title}' вже існує).");
+                    _context.Games.Add(new Game { Title = title, ReleaseDate = DateOnly.FromDateTime(releaseDate), SizeGb = size });
                 }
             }
         }
@@ -462,32 +471,27 @@ namespace ISTTP_lab_1.Controllers
                 if (row.Cell(1).TryGetValue<int>(out int id) && id > 0)
                     existing = await _context.Users.FindAsync(id);
 
+                bool isDuplicateInDb = existing != null
+                    ? await _context.Users.AnyAsync(u => u.Id != existing.Id && (u.Username == username || (email != null && u.Email == email)))
+                    : await _context.Users.AnyAsync(u => u.Username == username || (email != null && u.Email == email));
+                bool isDuplicateInLocal = existing != null
+                    ? _context.Users.Local.Any(u => u.Id != existing.Id && (u.Username == username || (email != null && u.Email == email)))
+                    : _context.Users.Local.Any(u => u.Username == username || (email != null && u.Email == email));
+
+                if (isDuplicateInDb || isDuplicateInLocal)
+                {
+                    errors.Add($"[Користувачі] Рядок {rowNum}: пропущено (логін або пошта вже зайняті, або дублюються у файлі).");
+                    continue;
+                }
+
                 if (existing != null)
                 {
-                    bool isDuplicate = await _context.Users.AnyAsync(u =>
-                        u.Id != existing.Id &&
-                        (u.Username == username || (email != null && u.Email == email)));
-                    if (isDuplicate)
-                    {
-                        errors.Add($"[Користувачі] Рядок {rowNum}: пропущено (логін або пошта вже зайняті іншим користувачем).");
-                        continue;
-                    }
-
                     existing.Username = username;
                     existing.Email = email;
                 }
                 else
                 {
-                    bool isDuplicate = await _context.Users.AnyAsync(u =>
-                        u.Username == username || (email != null && u.Email == email));
-                    if (!isDuplicate)
-                    {
-                        _context.Users.Add(new User { Username = username, Email = email, PasswordHash = null });
-                    }
-                    else
-                    {
-                        errors.Add($"[Користувачі] Рядок {rowNum}: пропущено (користувач з таким логіном/поштою вже є).");
-                    }
+                    _context.Users.Add(new User { Username = username, Email = email, PasswordHash = null });
                 }
             }
         }
@@ -588,15 +592,21 @@ namespace ISTTP_lab_1.Controllers
                 if (row.Cell(1).TryGetValue<int>(out int id) && id > 0)
                     existing = await _context.Requirements.FindAsync(id);
 
+                bool isDuplicateInDb = existing != null
+                    ? await _context.Requirements.AnyAsync(r => r.Id != existing.Id && r.GameId == game.Id && r.Type == reqType)
+                    : await _context.Requirements.AnyAsync(r => r.GameId == game.Id && r.Type == reqType);
+                bool isDuplicateInLocal = existing != null
+                    ? _context.Requirements.Local.Any(r => r.Id != existing.Id && r.GameId == game.Id && r.Type == reqType)
+                    : _context.Requirements.Local.Any(r => r.GameId == game.Id && r.Type == reqType);
+
+                if (isDuplicateInDb || isDuplicateInLocal)
+                {
+                    errors.Add($"[Вимоги] Рядок {rowNum}: пропущено (вимоги типу '{reqTypeStr}' для гри '{gameTitle}' вже існують або дублюються у файлі).");
+                    continue;
+                }
+
                 if (existing != null)
                 {
-                    bool isDuplicate = await _context.Requirements.AnyAsync(r => r.Id != existing.Id && r.GameId == game.Id && r.Type == reqType);
-                    if (isDuplicate)
-                    {
-                        errors.Add($"[Вимоги] Рядок {rowNum}: пропущено (такий тип вимог для цієї гри вже існує).");
-                        continue;
-                    }
-
                     existing.GameId = game.Id;
                     existing.CpuId = cpu.Id;
                     existing.GpuId = gpu.Id;
@@ -608,24 +618,17 @@ namespace ISTTP_lab_1.Controllers
                 }
                 else
                 {
-                    if (!await _context.Requirements.AnyAsync(r => r.GameId == game.Id && r.Type == reqType))
+                    _context.Requirements.Add(new Requirement
                     {
-                        _context.Requirements.Add(new Requirement
-                        {
-                            GameId = game.Id,
-                            CpuId = cpu.Id,
-                            GpuId = gpu.Id,
-                            Type = reqType,
-                            RamGb = ramGb,
-                            VramGb = vramGb,
-                            CpuCores = cpuCores,
-                            OSes = osList
-                        });
-                    }
-                    else
-                    {
-                        errors.Add($"[Вимоги] Рядок {rowNum}: пропущено (такий тип вимог для цієї гри вже існує).");
-                    }
+                        GameId = game.Id,
+                        CpuId = cpu.Id,
+                        GpuId = gpu.Id,
+                        Type = reqType,
+                        RamGb = ramGb,
+                        VramGb = vramGb,
+                        CpuCores = cpuCores,
+                        OSes = osList
+                    });
                 }
             }
         }
@@ -677,18 +680,21 @@ namespace ISTTP_lab_1.Controllers
                 if (row.Cell(1).TryGetValue<int>(out int id) && id > 0)
                     existing = await _context.PcConfigs.FindAsync(id);
 
+                bool isDuplicateInDb = existing != null
+                    ? await _context.PcConfigs.AnyAsync(p => p.Id != existing.Id && p.UserId == user.Id && p.CpuId == cpu.Id && p.GpuId == gpu.Id && p.RamGb == ramGb && p.Os == pcOs)
+                    : await _context.PcConfigs.AnyAsync(p => p.UserId == user.Id && p.CpuId == cpu.Id && p.GpuId == gpu.Id && p.RamGb == ramGb && p.Os == pcOs);
+                bool isDuplicateInLocal = existing != null
+                    ? _context.PcConfigs.Local.Any(p => p.Id != existing.Id && p.UserId == user.Id && p.CpuId == cpu.Id && p.GpuId == gpu.Id && p.RamGb == ramGb && p.Os == pcOs)
+                    : _context.PcConfigs.Local.Any(p => p.UserId == user.Id && p.CpuId == cpu.Id && p.GpuId == gpu.Id && p.RamGb == ramGb && p.Os == pcOs);
+
+                if (isDuplicateInDb || isDuplicateInLocal)
+                {
+                    errors.Add($"[Збірки ПК] Рядок {rowNum}: пропущено (така збірка для користувача '{username}' вже існує або дублюється у файлі).");
+                    continue;
+                }
+
                 if (existing != null)
                 {
-                    bool isDuplicate = await _context.PcConfigs.AnyAsync(p =>
-                        p.Id != existing.Id && p.UserId == user.Id && p.CpuId == cpu.Id &&
-                        p.GpuId == gpu.Id && p.RamGb == ramGb && p.Os == pcOs);
-
-                    if (isDuplicate)
-                    {
-                        errors.Add($"[Збірки ПК] Рядок {rowNum}: пропущено (така збірка вже існує).");
-                        continue;
-                    }
-
                     existing.UserId = user.Id;
                     existing.CpuId = cpu.Id;
                     existing.GpuId = gpu.Id;
@@ -697,23 +703,14 @@ namespace ISTTP_lab_1.Controllers
                 }
                 else
                 {
-                    if (!await _context.PcConfigs.AnyAsync(p =>
-                            p.UserId == user.Id && p.CpuId == cpu.Id &&
-                            p.GpuId == gpu.Id && p.RamGb == ramGb && p.Os == pcOs))
+                    _context.PcConfigs.Add(new PcConfig
                     {
-                        _context.PcConfigs.Add(new PcConfig
-                        {
-                            UserId = user.Id,
-                            CpuId = cpu.Id,
-                            GpuId = gpu.Id,
-                            RamGb = ramGb,
-                            Os = pcOs
-                        });
-                    }
-                    else
-                    {
-                        errors.Add($"[Збірки ПК] Рядок {rowNum}: пропущено (така збірка вже існує).");
-                    }
+                        UserId = user.Id,
+                        CpuId = cpu.Id,
+                        GpuId = gpu.Id,
+                        RamGb = ramGb,
+                        Os = pcOs
+                    });
                 }
             }
         }
