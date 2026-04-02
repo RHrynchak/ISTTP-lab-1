@@ -17,5 +17,10 @@ public partial class User
 
     public string? PasswordHash { get; set; }
 
+    [Required(ErrorMessage = "Роль є обов'язковою.")]
+    [StringLength(20, ErrorMessage = "Назва ролі не може перевищувати 20 символів.")]
+    [RegularExpression("^(Admin|User)$", ErrorMessage = "Недопустима роль. Дозволені лише 'Admin' або 'User'.")]
+    public string Role { get; set; } = null!;
+
     public virtual ICollection<PcConfig> PcConfigs { get; set; } = new List<PcConfig>();
 }

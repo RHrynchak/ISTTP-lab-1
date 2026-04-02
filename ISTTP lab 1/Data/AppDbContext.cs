@@ -149,6 +149,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Email).HasColumnName("email");
             entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
             entity.Property(e => e.Username).HasColumnName("username");
+            entity.Property(e => e.Role)
+                .HasColumnName("role")
+                .HasDefaultValueSql("'User'::character varying");
 
             entity.HasIndex(e => e.Username).IsUnique();
             entity.HasIndex(e => e.Email).IsUnique();

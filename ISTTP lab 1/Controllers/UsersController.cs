@@ -54,7 +54,7 @@ namespace ISTTP_lab_1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Email,Username,PasswordHash")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Email,Username,PasswordHash,Role")] User user)
         {
             if (_context.Users.Any(u => u.Username == user.Username))
             {
@@ -103,7 +103,7 @@ namespace ISTTP_lab_1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,Username,PasswordHash")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,Username,PasswordHash,Role")] User user)
         {
             if (id != user.Id)
             {
