@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ISTTP_lab_1.Data;
+using ISTTP_lab_1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ISTTP_lab_1.Data;
-using ISTTP_lab_1.Models;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ISTTP_lab_1.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly AppDbContext _context;
@@ -70,6 +73,7 @@ namespace ISTTP_lab_1.Controllers
             {
                 try
                 {
+                    user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
                     _context.Add(user);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -103,12 +107,14 @@ namespace ISTTP_lab_1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,Username,PasswordHash,Role")] User user)
+        public async Task<IActionResult> Edit(int id, string? newPassword, [Bind("Id,Email,Username,Role")] User user)
         {
             if (id != user.Id)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("PasswordHash");
 
             if (_context.Users.Any(u => u.Username == user.Username && u.Id != user.Id))
             {
@@ -124,6 +130,16 @@ namespace ISTTP_lab_1.Controllers
             {
                 try
                 {
+                    var existingUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+                    if (existingUser == null) return NotFound();
+                    if (!string.IsNullOrEmpty(newPassword))
+                    {
+                        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                    }
+                    else
+                    {
+                        user.PasswordHash = existingUser.PasswordHash;
+                    }
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));

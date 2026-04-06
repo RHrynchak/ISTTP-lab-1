@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ISTTP_lab_1.Data;
+using ISTTP_lab_1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ISTTP_lab_1.Data;
-using ISTTP_lab_1.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ISTTP_lab_1.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class GpusController : Controller
     {
         private readonly AppDbContext _context;

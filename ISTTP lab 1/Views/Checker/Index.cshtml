@@ -18,27 +18,57 @@
                         </div>
                     }
 
-                    <p class="text-center mb-4">Оберіть ваш ПК та бажану гру, щоб дізнатися, чи вистачить вам ПОТУЖНОСТІ!</p>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        var pcList = ViewBag.PcConfigId as SelectList;
+                        bool hasPcs = pcList != null && pcList.Any();
 
-                    <form asp-action="Result" method="post">
-                        <div class="form-group mb-3">
-                            <label class="form-label fw-bold text-info">Оберіть ваш ПК:</label>
-                            <select name="pcConfigId" class="form-select" asp-items="ViewBag.PcConfigId" required>
-                                <option value="">-- Оберіть ПК --</option>
-                            </select>
-                        </div>
+                        if (!hasPcs)
+                        {
+                            <div class="p-4 border border-secondary rounded text-center mt-3">
+                                <h5 class="mb-3 text-warning">У вас ще немає створених збірок ПК!</h5>
+                                <p class="text-white small mb-4">Щоб дізнатися, чи потягне ваш комп'ютер гру, спочатку додайте його до бази.</p>
+                                <a asp-controller="PcConfigs" asp-action="Create" class="btn btn-primary btn-lg fw-bold shadow">
+                                    Створити першу збірку
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-center mb-4">Оберіть ваш ПК та бажану гру, щоб дізнатися, чи вистачить вам ПОТУЖНОСТІ! 🚀</p>
 
-                        <div class="form-group mb-4">
-                            <label class="form-label fw-bold text-warning">Оберіть бажану гру:</label>
-                            <select name="gameId" class="form-select" asp-items="ViewBag.GameId" required>
-                                <option value="">-- Оберіть гру --</option>
-                            </select>
-                        </div>
+                            <form asp-action="Result" method="post">
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-bold text-info">Оберіть ваш ПК:</label>
+                                    <select name="pcConfigId" class="form-select" asp-items="ViewBag.PcConfigId" required>
+                                        <option value="">-- Оберіть ПК --</option>
+                                    </select>
+                                </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg fw-bold">ПЕРЕВІРИТИ</button>
+                                <div class="form-group mb-4">
+                                    <label class="form-label fw-bold text-warning">Оберіть бажану гру:</label>
+                                    <select name="gameId" class="form-select" asp-items="ViewBag.GameId" required>
+                                        <option value="">-- Оберіть гру --</option>
+                                    </select>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg fw-bold shadow">ПЕРЕВІРИТИ</button>
+                                </div>
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <div class="p-4 border border-secondary rounded text-center mt-2">
+                            <h5 class="mb-3 text-warning">Щоб перевірити сумісність, потрібно авторизуватися</h5>
+                            <p class="text-white small mb-4">Ви можете увійти у свій акаунт або створити тимчасового гостя в один клік, щоб зберігати свої збірки!</p>
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg fw-bold shadow">
+                                Увійти / Гість
+                            </a>
                         </div>
-                    </form>
+                    }
+
                 </div>
             </div>
         </div>

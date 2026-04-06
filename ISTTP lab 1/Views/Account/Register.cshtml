@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-primary bg-black text-white">
+                <div class="card-header bg-primary text-white text-center fw-bold">
+                    <h3 class="mb-0">Створити акаунт</h3>
+                </div>
+                <div class="card-body">
+                    <style>
+                                            .no-bullets-summary ul { list-style-type: none !important; padding-left: 0 !important; margin-bottom: 0 !important; }
+                    </style>
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert bg-danger text-white border-0 shadow-sm text-center no-bullets-summary mb-4">
+                            <div asp-validation-summary="All" class="mb-0 fw-bold"></div>
+                        </div>
+                    }
+
+                    <form asp-action="Register" method="post">
+                        
+                        <div class="form-group mb-3">
+                            <label class="form-label text-info fw-bold">Електронна пошта</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="form-label text-info fw-bold">Логін</label>
+                            <input type="text" name="username" class="form-control" required minlength="3" maxlength="50" />
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label class="form-label text-warning fw-bold">Пароль</label>
+                            <input type="password" name="password" class="form-control" required minlength="6" />
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="form-label text-warning fw-bold">Підтвердіть пароль</label>
+                            <input type="password" name="confirmPassword" class="form-control" required minlength="6" />
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary fw-bold shadow">Зареєструватися</button>
+                        </div>
+                    </form>
+
+                    <hr class="border-secondary" />
+
+                    <div class="text-center mt-3">
+                        <span class="text-muted">Вже маєте акаунт?</span>
+                        <a asp-action="Login" class="text-info fw-bold ms-1 text-decoration-none">Увійти</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,7 @@ using ISTTP_lab_1.Data;
 using ISTTP_lab_1.Models;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         npgsqlOptions.MapEnum<OsEnum>("os_enum");
         npgsqlOptions.MapEnum<RequirementType>("requirement_type");
     }));
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -37,6 +45,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

@@ -246,37 +246,40 @@
         </div>
     </div>
 
-    <div class="row mb-4 g-3">
-        <div class="col-md-12">
-            <div class="chart-card">
-                <div class="chart-card-header" style="color: #e8eaf0;">
-                    БАЗА ДАНИХ EXCEL
-                </div>
-                <div class="p-4">
-                    <div class="row align-items-center text-center">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="row mb-4 g-3">
+            <div class="col-md-12">
+                <div class="chart-card">
+                    <div class="chart-card-header" style="color: #e8eaf0;">
+                        БАЗА ДАНИХ EXCEL
+                    </div>
+                    <div class="p-4">
+                        <div class="row align-items-center text-center">
 
-                        <div class="col-md-6 border-end" style="border-color: rgba(42, 159, 214, 0.25) !important;">
-                            <div class="stat-label mb-3">Завантажити бекап</div>
-                            <a asp-action="ExportData" class="btn btn-neon-blue px-4 py-2">
-                                ДАМП БАЗИ (.XLSX)
-                            </a>
+                            <div class="col-md-6 border-end" style="border-color: rgba(42, 159, 214, 0.25) !important;">
+                                <div class="stat-label mb-3">Завантажити бекап</div>
+                                <a asp-action="ExportData" class="btn btn-neon-blue px-4 py-2">
+                                    ДАМП БАЗИ (.XLSX)
+                                </a>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="stat-label mb-3">Відновити / Оновити</div>
+                                <form asp-action="ImportData" method="post" enctype="multipart/form-data" class="d-flex flex-column align-items-center">
+                                    <input type="file" name="fileExcel" class="form-control custom-file-input mb-3 w-75" accept=".xlsx" required />
+                                    <button type="submit" class="btn btn-neon-green px-4 py-2">
+                                        Завантажити дані (.XLSX)
+                                    </button>
+                                </form>
+                            </div>
+
                         </div>
-
-                        <div class="col-md-6">
-                            <div class="stat-label mb-3">Відновити / Оновити</div>
-                            <form asp-action="ImportData" method="post" enctype="multipart/form-data" class="d-flex flex-column align-items-center">
-                                <input type="file" name="fileExcel" class="form-control custom-file-input mb-3 w-75" accept=".xlsx" required />
-                                <button type="submit" class="btn btn-neon-green px-4 py-2">
-                                    Завантажити дані (.XLSX)
-                                </button>
-                            </form>
-                        </div>
-
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
 
     <div class="row g-3 mb-3">
         <div class="col-md-4">

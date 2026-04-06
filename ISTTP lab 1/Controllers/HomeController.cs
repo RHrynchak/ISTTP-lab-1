@@ -1,6 +1,7 @@
 using ClosedXML.Excel;
 using ISTTP_lab_1.Data;
 using ISTTP_lab_1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -59,6 +60,7 @@ namespace ISTTP_lab_1.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ExportData()
         {
             var cpus = await _context.Cpus.ToListAsync();
@@ -229,6 +231,7 @@ namespace ISTTP_lab_1.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ImportData(IFormFile fileExcel)
         {
             if (fileExcel == null || fileExcel.Length == 0)

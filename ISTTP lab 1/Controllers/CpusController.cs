@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ISTTP_lab_1.Data;
 using ISTTP_lab_1.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ISTTP_lab_1.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CpusController : Controller
     {
         private readonly AppDbContext _context;

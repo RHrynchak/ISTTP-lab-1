@@ -21,29 +21,55 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
+                            <a class="nav-link text-white fw-bold" asp-area="" asp-controller="Checker" asp-action="Index">Перевірка характеристик</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Checker" asp-action="Index">Перевірка характеристик</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Games" asp-action="Index">Ігри</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Cpus" asp-action="Index">Процесори</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Gpus" asp-action="Index">Відеокарти</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Requirements" asp-action="Index">Вимоги до ігор</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="PcConfigs" asp-action="Index">Збірки ПК</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Користувачі</a>
-                        </li>
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="PcConfigs" asp-action="Index">Мої збірки</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-warning fw-bold" href="#" role="button" data-bs-toggle="dropdown">
+                                    База даних (Адмін)
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-warning">
+                                    <li><a class="dropdown-item text-white" asp-controller="Cpus" asp-action="Index">Процесори</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Gpus" asp-action="Index">Відеокарти</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Games" asp-action="Index">Ігри</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Requirements" asp-action="Index">Вимоги</a></li>
+                                    <li><hr class="dropdown-divider border-secondary"></li>
+                                    <li><a class="dropdown-item text-danger fw-bold" asp-controller="Users" asp-action="Index">Користувачі</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item d-flex align-items-center me-3">
+                                <span class="text-info fw-bold">Привіт, @User.Identity.Name!</span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm mt-1">Вийти</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item me-2 mt-1">
+                                <a class="btn btn-info btn-sm fw-bold" asp-controller="Account" asp-action="Register">Реєстрація</a>
+                            </li>
+                            <li class="nav-item mt-1">
+                                <a class="btn btn-primary btn-sm fw-bold" asp-controller="Account" asp-action="Login">Увійти</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

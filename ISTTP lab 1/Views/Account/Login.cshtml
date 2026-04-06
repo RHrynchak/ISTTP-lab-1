@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Вхід";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-info bg-black text-white">
+                <div class="card-header bg-info text-dark text-center fw-bold">
+                    <h3 class="mb-0">Авторизація</h3>
+                </div>
+                <div class="card-body">
+                    
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert bg-danger text-white border-0 shadow-sm text-center fw-bold">
+                            @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <div>@modelError.ErrorMessage</div>
+                            }
+                        </div>
+                    }
+
+                    <form asp-action="Login" method="post">
+                        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                        
+                        <div class="form-group mb-3">
+                            <label class="form-label text-info fw-bold">Логін</label>
+                            <input type="text" name="username" class="form-control" required />
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label class="form-label text-info fw-bold">Пароль</label>
+                            <input type="password" name="password" class="form-control" required />
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary fw-bold">Увійти</button>
+                        </div>
+                    </form>
+
+                    <hr class="border-secondary" />
+
+                    <form asp-action="LoginAsGuest" method="post">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning fw-bold">
+                                Увійти як Гість
+                            </button>
+                        </div>
+                        <div class="text-center mt-2 text-muted small">
+                            Немає акаунту? Спробуй гостьовий вхід за 1 клік!
+                        </div>
+                    </form>
+
+                    <hr class="border-secondary mt-4 mb-3" />
+
+                    <div class="text-center">
+                        <span class="text-muted small">Вперше у нас? Створіть свій власний акаунт:</span><br />
+                        <a asp-action="Register" class="btn btn-info btn-sm mt-2 fw-bold px-4">
+                            Зареєструватися
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

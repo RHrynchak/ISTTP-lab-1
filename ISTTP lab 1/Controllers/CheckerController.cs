@@ -3,6 +3,7 @@ using ISTTP_lab_1.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ISTTP_lab_1.Controllers
 {
@@ -17,17 +18,24 @@ namespace ISTTP_lab_1.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var pcConfigs = await _context.PcConfigs
-                .Include(p => p.User)
-                .Include(p => p.Cpu)
-                .Include(p => p.Gpu)
-                .ToListAsync();
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var pcList = new List<object>();
 
-            var pcList = pcConfigs.Select(p => new
+            if (!string.IsNullOrEmpty(userIdString))
             {
-                Id = p.Id,
-                DisplayName = $"{p.User.Username}'s PC ({p.Cpu.ModelName} / {p.Gpu.ModelName})"
-            });
+                int userId = int.Parse(userIdString);
+                var myPcConfigs = await _context.PcConfigs
+                    .Include(p => p.Cpu)
+                    .Include(p => p.Gpu)
+                    .Where(p => p.UserId == userId)
+                    .ToListAsync();
+
+                pcList = myPcConfigs.Select(p => new
+                {
+                    Id = p.Id,
+                    DisplayName = $"Збірка #{p.Id} ({p.Cpu.ModelName} / {p.Gpu.ModelName})"
+                }).Cast<object>().ToList();
+            }
 
             ViewBag.PcConfigId = new SelectList(pcList, "Id", "DisplayName");
             ViewBag.GameId = new SelectList(await _context.Games.ToListAsync(), "Id", "Title");
