@@ -26,9 +26,10 @@ namespace ISTTP_lab_1.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string username, string password, string? returnUrl = null)
+        public async Task<IActionResult> Login(string loginOrEmail, string password, string? returnUrl = null)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Username == loginOrEmail || u.Email == loginOrEmail);
             if (user == null || user.PasswordHash == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
                 ModelState.AddModelError("", "Неправильний логін або пароль.");

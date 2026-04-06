@@ -160,6 +160,7 @@ namespace ISTTP_lab_1.Controllers
             ws.Cell(1, 1).Value = "ID";
             ws.Cell(1, 2).Value = "Логін";
             ws.Cell(1, 3).Value = "Email";
+            ws.Cell(1, 4).Value = "Роль";
             ws.Row(1).Style.Font.Bold = true;
 
             int row = 1;
@@ -169,6 +170,7 @@ namespace ISTTP_lab_1.Controllers
                 ws.Cell(row, 1).Value = user.Id;
                 ws.Cell(row, 2).Value = user.Username;
                 ws.Cell(row, 3).Value = user.Email;
+                ws.Cell(row, 4).Value = user.Role;
             }
             ws.Columns().AdjustToContents();
         }
@@ -446,6 +448,7 @@ namespace ISTTP_lab_1.Controllers
             if (usedRange == null) return;
 
             var emailValidator = new EmailAddressAttribute();
+            string defaultHash = BCrypt.Net.BCrypt.HashPassword("qwerty12345");
 
             foreach (var row in usedRange.RowsUsed().Skip(1))
             {
@@ -470,6 +473,20 @@ namespace ISTTP_lab_1.Controllers
                     continue;
                 }
 
+                string role = "User";
+                if (!row.Cell(4).IsEmpty())
+                {
+                    string parsedRole = row.Cell(4).GetString().Trim();
+                    if (parsedRole == "Admin" || parsedRole == "User")
+                    {
+                        role = parsedRole;
+                    }
+                    else
+                    {
+                        errors.Add($"[Користувачі] Рядок {rowNum}: невідома роль '{parsedRole}', автоматично встановлено 'User'.");
+                    }
+                }
+
                 User? existing = null;
                 if (row.Cell(1).TryGetValue<int>(out int id) && id > 0)
                     existing = await _context.Users.FindAsync(id);
@@ -491,10 +508,11 @@ namespace ISTTP_lab_1.Controllers
                 {
                     existing.Username = username;
                     existing.Email = email;
+                    existing.Role = role;
                 }
                 else
                 {
-                    _context.Users.Add(new User { Username = username, Email = email, PasswordHash = null });
+                    _context.Users.Add(new User { Username = username, Email = email, PasswordHash = defaultHash, Role = role });
                 }
             }
         }
