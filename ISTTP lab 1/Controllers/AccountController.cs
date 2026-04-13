@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace ISTTP_lab_1.Controllers
 {
@@ -87,6 +88,12 @@ namespace ISTTP_lab_1.Controllers
             if (password != confirmPassword)
             {
                 ModelState.AddModelError("", "Паролі не співпадають!");
+                return View();
+            }
+            var passwordRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$");
+            if (!passwordRegex.IsMatch(password))
+            {
+                ModelState.AddModelError("", "Пароль має містити мінімум 8 символів, велику і малу літери, цифру та спеціальний символ.");
                 return View();
             }
             if (_context.Users.Any(u => u.Username == username))

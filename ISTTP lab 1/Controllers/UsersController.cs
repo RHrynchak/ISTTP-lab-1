@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ISTTP_lab_1.Controllers
@@ -71,6 +72,12 @@ namespace ISTTP_lab_1.Controllers
 
             if (ModelState.IsValid)
             {
+                var passwordRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$");
+                if (!passwordRegex.IsMatch(user.PasswordHash ?? ""))
+                {
+                    ModelState.AddModelError("PasswordHash", "Пароль має містити мінімум 8 символів, велику і малу літери, цифру та спеціальний символ.");
+                    return View(user);
+                }
                 try
                 {
                     user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
@@ -134,6 +141,12 @@ namespace ISTTP_lab_1.Controllers
                     if (existingUser == null) return NotFound();
                     if (!string.IsNullOrEmpty(newPassword))
                     {
+                        var passwordRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$");
+                        if (!passwordRegex.IsMatch(newPassword))
+                        {
+                            ModelState.AddModelError("", "Новий пароль має містити мінімум 8 символів, велику і малу літери, цифру та спеціальний символ.");
+                            return View(user);
+                        }
                         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
                     }
                     else
