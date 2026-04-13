@@ -8,12 +8,13 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pag
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ISTTP_lab_1.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")] 
     public class UsersController : Controller
     {
         private readonly AppDbContext _context;
@@ -68,6 +69,11 @@ namespace ISTTP_lab_1.Controllers
             if (_context.Users.Any(u => u.Email == user.Email))
             {
                 ModelState.AddModelError("Email", "Користувач з такою поштою вже зареєстрований!");
+            }
+
+            if (!User.IsInRole("SuperAdmin"))
+            {
+                user.Role = "User";
             }
 
             if (ModelState.IsValid)
@@ -139,6 +145,17 @@ namespace ISTTP_lab_1.Controllers
                 {
                     var existingUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
                     if (existingUser == null) return NotFound();
+                    bool isSuperAdmin = User.IsInRole("SuperAdmin");
+                    string currentUserIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                    if (!isSuperAdmin && existingUser.Id.ToString() != currentUserIdStr && (existingUser.Role == "Admin" || existingUser.Role == "SuperAdmin"))
+                    {
+                        TempData["ErrorMessage"] = "У вас немає прав редагувати інших адміністраторів.";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    if (!isSuperAdmin)
+                    {
+                        user.Role = existingUser.Role;
+                    }
                     if (!string.IsNullOrEmpty(newPassword))
                     {
                         var passwordRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$");
@@ -199,6 +216,13 @@ namespace ISTTP_lab_1.Controllers
 
             if (user != null)
             {
+                bool isSuperAdmin = User.IsInRole("SuperAdmin");
+                string currentUserIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                if (!isSuperAdmin && user.Id.ToString() != currentUserIdStr && (user.Role == "Admin" || user.Role == "SuperAdmin"))
+                {
+                    TempData["ErrorMessage"] = "Ви не можете видалити іншого адміністратора.";
+                    return RedirectToAction(nameof(Index));
+                }
                 _context.PcConfigs.RemoveRange(user.PcConfigs);
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();

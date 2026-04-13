@@ -31,7 +31,7 @@
                             </li>
                         }
 
-                        @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-warning fw-bold" href="#" role="button" data-bs-toggle="dropdown">

@@ -1,8 +1,12 @@
-﻿@model IEnumerable<ISTTP_lab_1.Models.User>
+﻿@using System.Security.Claims
+@model IEnumerable<ISTTP_lab_1.Models.User>
 
 @{
     ViewData["Title"] = "Index";
+    bool isSuperAdmin = User.IsInRole("SuperAdmin");
+    string currentUserId = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)!;
 }
+
 
 <h1>Index</h1>
 
@@ -39,11 +43,21 @@
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
             <td>
-                <div class="d-flex gap-2">
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                </div>
+                @{
+                    bool canEdit = isSuperAdmin || (item.Role != "Admin" && item.Role != "SuperAdmin") || item.Id.ToString() == currentUserId;
+                }                
+                @if (canEdit)
+                {
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </div>
+                }
+                else
+                {
+                    <span class="text-muted border px-2 py-1 rounded">Захищено</span>
+                }
             </td>
         </tr>
 }

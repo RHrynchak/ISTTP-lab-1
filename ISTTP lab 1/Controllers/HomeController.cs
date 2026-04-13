@@ -60,7 +60,7 @@ namespace ISTTP_lab_1.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> ExportData()
         {
             var cpus = await _context.Cpus.ToListAsync();
@@ -233,7 +233,7 @@ namespace ISTTP_lab_1.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> ImportData(IFormFile fileExcel)
         {
             if (fileExcel == null || fileExcel.Length == 0)
@@ -480,6 +480,17 @@ namespace ISTTP_lab_1.Controllers
                     if (parsedRole == "Admin" || parsedRole == "User")
                     {
                         role = parsedRole;
+                    }
+                    else if (parsedRole == "SuperAdmin")
+                    {
+                        if (User.IsInRole("SuperAdmin"))
+                        {
+                            role = parsedRole;
+                        }
+                        else
+                        {
+                            errors.Add($"[Користувачі] Рядок {rowNum}: у вас немає прав на імпорт ролі 'SuperAdmin', встановлено 'User'.");
+                        }
                     }
                     else
                     {

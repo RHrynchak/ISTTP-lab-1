@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ISTTP_lab_1.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class RequirementsController : Controller
     {
         private readonly AppDbContext _context;

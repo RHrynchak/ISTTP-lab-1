@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ISTTP_lab_1.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class GamesController : Controller
     {
         private readonly AppDbContext _context;
