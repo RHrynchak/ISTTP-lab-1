@@ -45,13 +45,16 @@
             <td>
                 @{
                     bool canEdit = isSuperAdmin || (item.Role != "Admin" && item.Role != "SuperAdmin") || item.Id.ToString() == currentUserId;
-                }                
+                }               
                 @if (canEdit)
                 {
                     <div class="d-flex gap-2">
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>                     
+                        @if (item.Id.ToString() != currentUserId)
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                        }
                     </div>
                 }
                 else
